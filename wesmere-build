@@ -133,7 +133,7 @@ def wesmere_xslt(input_xsl, xsltproc_bin, htmlpost_bin):
             # Now HTMLPOST the output to wrap things up.
             with tempfile.NamedTemporaryFile(mode='w+b') as tmp_html:
                 tmp_html.write(result.stdout)
-                result = subprocess.run([htmlpost_bin, tmp_html.name])
+                result = subprocess.run([htmlpost_bin, '-M', tmp_html.name])
                 if result.returncode:
                     sys.exit("HTMLPOST step failed (exit status {0}): {1}".format(result.returncode, " ".join(result.args)))
                 # Copy the result to stdout
