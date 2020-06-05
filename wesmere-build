@@ -1,0 +1,179 @@
+#!/usr/bin/env python3
+'''
+Builds the web page containing the Wesnoth Constitution
+
+Copyright (C) 2020 by Iris Morelle <shadowm@wesnoth.org>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+'''
+
+from argparse import ArgumentParser
+from datetime import datetime
+from pathlib import Path
+import io
+import markdown
+import subprocess
+import sys
+import tempfile
+
+#
+# We piggyback on the xsltproc -> htmlpost pipeline used by Wesmere, so we
+# need to know exactly where Wesmere is installed. This can be overridden in
+# the command line.
+#
+WESMERE_ROOT = "/home/wesnoth/git/wesmere"
+
+#
+# Markdown source, relative to the process working directory. This can be
+# overridden in the command line.
+#
+LISAR_SRC = "Project-Constitution.md"
+
+#
+# Javascript supplement embedded into the generated web page, relative to the
+# process working directory.
+#
+LISAR_JS = "util.js"
+
+#
+# CSS supplement embedded into the generated web page, relative to the process
+# working directory.
+#
+LISAR_CSS = "util.css"
+
+#
+# XSLT path relative to WESMERE_ROOT.
+#
+WESMERE_XSLT = "static/template_inside.xsl"
+
+#
+# Path to the htmlpost program, relative to the Wesmere source.
+#
+WESMERE_HTMLPOST = "wesmere/bin/htmlpost"
+
+#
+# Name of the xsltproc program (in PATH or with a full or relative path).
+#
+XSLTPROC = "xsltproc"
+
+#
+# Authoritative URL for the Constitution's Markdown source repository.
+#
+LISAR_URL = "https://github.com/wesnoth/wesnoth-constitution"
+
+#
+# Format (as used by strftime) used to generate the footer timestamp.
+#
+LISAR_TS_FORMAT = "%d %B %Y %H:%M"
+
+#
+# The actual XSL passed to xsltproc. This is formatted in with the correct data
+# after parsing the Markdown source. The positional parameters are as follows:
+#
+#   0. The path to the XSLT file.
+#   1. The main contents of the page, already converted to HTML.
+#   2. The timestamp to be displayed to users.
+#   3. The authoritative URL for the generated document's sources.
+#
+LISAR_XSL = '''\
+<?xml version="1.0"?>
+<!DOCTYPE xml:stylesheet[
+    <!ENTITY ndash "&#8211;">
+    <!ENTITY mdash "&#8212;">
+    <!ENTITY hbar  "&#8213;">
+]>
+<?xml-stylesheet type="text/xsl" href="{0}"?>
+<document>
+    <title>Project Constitution</title>
+    <style>@ HTMLPOST:INCLUDE {4} @</style>
+    <content>
+        <a id="constitution"></a>
+
+        {1}
+
+        <div id="lastmod">Generated on {2} from &#8249;<a href="{3}">{3}</a>&#8250;.</div>
+
+        <script>@ HTMLPOST:INCLUDE {5} @</script>
+    </content>
+</document>
+'''
+
+
+def wesmere_xslt(input_xsl, xsltproc_bin, htmlpost_bin):
+    "Takes a string and runs it through the Wesmere XSLT pipeline."
+    try:
+        # First write the unmodified XSLT output.
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8') as tmp_xsl:
+            tmp_xsl.write(input_xsl)
+            result = subprocess.run([xsltproc_bin, tmp_xsl.name],
+                                    stdout=subprocess.PIPE,
+                                    stderr=sys.stderr,
+                                    encoding='utf-8')
+            if result.returncode:
+                sys.exit("XSLT step failed (exit status {0}): {1}".
+                         format(result.returncode, " ".join(result.args)))
+            if result.stdout is None:
+                sys.exit("XSLT step did not produce any output: {1}".
+                         format(" ".join(result.args)))
+            # Now HTMLPOST the output to wrap things up.
+            with tempfile.NamedTemporaryFile(mode='w+', encoding='utf-8') as tmp_html:
+                tmp_html.write(result.stdout)
+                result = subprocess.run([htmlpost_bin, tmp_html.name])
+                if result.returncode:
+                    sys.exit("HTMLPOST step failed (exit status {0}): {1}".format(result.returncode, " ".join(result.args)))
+                # Copy the result to stdout
+                tmp_html.seek(io.SEEK_SET)
+                sys.stdout.write(tmp_html.read())
+    except FileNotFoundError:
+        sys.exit("Could not open a temporary file, aborting.")
+
+
+def build_xsl(xslt_path, body):
+    ts = datetime.now().strftime(LISAR_TS_FORMAT)
+    return LISAR_XSL.format(xslt_path, body, ts, LISAR_URL, LISAR_CSS, LISAR_JS)
+
+
+if __name__ == "__main__":
+    aparser = ArgumentParser()
+    aparser.add_argument('wesmere_root',
+                         metavar='WESMERE_ROOT',
+                         default=WESMERE_ROOT,
+                         nargs='?')
+    aparser.add_argument('input_file',
+                         metavar='INPUT_FILE',
+                         default=LISAR_SRC,
+                         nargs='?')
+    args = aparser.parse_args()
+    wesmere_path = Path(args.wesmere_root)
+    input_path = Path(args.input_file)
+    xslt_path = wesmere_path / WESMERE_XSLT
+    htmlpost_bin = wesmere_path / WESMERE_HTMLPOST
+    xsltproc_bin = XSLTPROC
+
+    try:
+        body_html = None
+        with open(input_path, 'r', encoding='utf-8') as input_file:
+            text = input_file.read()
+            body_html = markdown.markdown(text)
+        if not xslt_path.exists():
+            sys.exit("Could not open XSL stylesheet {0}, aborting.".format(xslt_path))
+        xsl = build_xsl(xslt_path, body_html)
+        wesmere_xslt(xsl, xsltproc_bin, htmlpost_bin)
+    except FileNotFoundError as err:
+        sys.exit("Could not open input file {0}, aborting.".format(err.filename))
