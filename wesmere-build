@@ -75,7 +75,7 @@ XSLTPROC = "xsltproc"
 #
 # Authoritative URL for the Constitution's Markdown source repository.
 #
-LISAR_URL = "https://github.com/wesnoth/wesnoth-constitution"
+LISAR_URL = "https://github.com/wesnoth/constitution"
 
 #
 # Format (as used by strftime) used to generate the footer timestamp.
