@@ -123,8 +123,7 @@ def wesmere_xslt(input_xsl, xsltproc_bin, htmlpost_bin):
             tmp_xsl.write(input_xsl)
             result = subprocess.run([xsltproc_bin, tmp_xsl.name],
                                     stdout=subprocess.PIPE,
-                                    stderr=sys.stderr,
-                                    encoding='utf-8')
+                                    stderr=sys.stderr)
             if result.returncode:
                 sys.exit("XSLT step failed (exit status {0}): {1}".
                          format(result.returncode, " ".join(result.args)))
@@ -132,14 +131,14 @@ def wesmere_xslt(input_xsl, xsltproc_bin, htmlpost_bin):
                 sys.exit("XSLT step did not produce any output: {1}".
                          format(" ".join(result.args)))
             # Now HTMLPOST the output to wrap things up.
-            with tempfile.NamedTemporaryFile(mode='w+', encoding='utf-8') as tmp_html:
+            with tempfile.NamedTemporaryFile(mode='w+b') as tmp_html:
                 tmp_html.write(result.stdout)
                 result = subprocess.run([htmlpost_bin, tmp_html.name])
                 if result.returncode:
                     sys.exit("HTMLPOST step failed (exit status {0}): {1}".format(result.returncode, " ".join(result.args)))
                 # Copy the result to stdout
                 tmp_html.seek(io.SEEK_SET)
-                sys.stdout.write(tmp_html.read())
+                sys.stdout.buffer.write(tmp_html.read())
     except FileNotFoundError:
         sys.exit("Could not open a temporary file, aborting.")
 
@@ -168,12 +167,12 @@ if __name__ == "__main__":
 
     try:
         body_html = None
-        with open(input_path, 'r', encoding='utf-8') as input_file:
+        with open(str(input_path), 'r', encoding='utf-8') as input_file:
             text = input_file.read()
             body_html = markdown.markdown(text)
         if not xslt_path.exists():
             sys.exit("Could not open XSL stylesheet {0}, aborting.".format(xslt_path))
-        xsl = build_xsl(xslt_path, body_html)
-        wesmere_xslt(xsl, xsltproc_bin, htmlpost_bin)
+        xsl = build_xsl(str(xslt_path), body_html)
+        wesmere_xslt(xsl, xsltproc_bin, str(htmlpost_bin))
     except FileNotFoundError as err:
         sys.exit("Could not open input file {0}, aborting.".format(err.filename))
