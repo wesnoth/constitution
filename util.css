@@ -20,6 +20,26 @@
  * SOFTWARE.
  */
 
+/*
+ * FIXME: Some visual properties are taken from Wesmere and rely on Sass
+ * variables that should be exported by Wesmere. Alternatively, parts of this
+ * stylesheet might work better integrated into Wesmere proper instead.
+ */
+
+#lisar-nav-menu + ul {
+	-webkit-columns: 3;
+	-moz-columns: 3;
+	columns: 3;
+
+	-webkit-column-gap: 0;
+	-moz-column-gap: 0;
+	column-gap: 0;
+
+	-webkit-column-rule: solid 1px #cbac76;
+	-moz-column-rule: solid 1px #cbac76;
+	column-rule: solid 1px #cbac76;
+}
+
 blockquote {
 	margin-left: 2em;
 	margin-right: 0;

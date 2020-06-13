@@ -110,6 +110,7 @@ LISAR_XSL = '''\
         <div id="lastmod">Generated on {2} from &#8249;<a href="{3}">{3}</a>&#8250;.</div>
 
         <script>@ HTMLPOST:INCLUDE {5} @</script>
+        <script src="/wesmere/js/wiki.js"></script>
     </content>
 </document>
 '''

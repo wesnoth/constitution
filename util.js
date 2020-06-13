@@ -21,6 +21,61 @@
  */
 
 (function() {
+	/*
+	 * Toolbar
+	 */
+	document.querySelector("h1").insertAdjacentHTML(
+		"beforebegin",
+		`<div id='wm-wiki-toolbar' role='toolbar'>
+			<ul class='wm-toolbar' role='toolbar'/>
+		</div>`
+	);
+
+	const main_toolbar = document.querySelector("#wm-wiki-toolbar > ul");
+
+	function toolbarAppend(html, is_dropdown)
+	{
+		main_toolbar.insertAdjacentHTML("beforeend", (is_dropdown ? "<li class='wm-dropdown'>" : "<li>") + html + "</li>");
+	}
+
+	/*
+	 * Navigation menu
+	 */
+
+	toolbarAppend(`
+		<a id='lisar-nav-menu' class='wm-dropdown-trigger' href='#' role='button'>
+			<i class='wm-toolbar-icon fa-map-signs' aria-hidden='true'></i> <span>Jump To</span>
+			<i class='wm-toolbar-dropdown-marker' aria-hidden='true'></i>
+		</a>
+		<ul class='wm-dropdown-menu' role='menu'/>
+	`, true);
+
+	const nav_menu = document.querySelector("#lisar-nav-menu + ul");
+
+	// Article labels are always the first <strong> child of <p> directly under #content. This
+	// specific distinction is needed to avoid selecting the labels of NN text.
+	const article_labels = document.querySelectorAll("#content > p > strong:first-child");
+
+	article_labels.forEach(label => {
+		let match = label.textContent.match(/^Article ([0-9]+)\.$/i);
+
+		if (match != null)
+		{
+			let article_num = match[1];
+			label.id = "article" + article_num;
+
+			nav_menu.insertAdjacentHTML("beforeend", `
+				<li>
+					<a href='#article${article_num}' role='menuitem'>Article ${article_num}</a>
+				</li>
+			`);
+		}
+	});
+
+	/*
+	 * Non-normative text toggle
+	 */
+
 	const nn_display_on = {
 		icon:  "wm-toolbar-icon fa-eye",
 		label: "Show Non-Normative Text",
@@ -28,7 +83,7 @@
 	const nn_display_off = {
 		icon:  "wm-toolbar-icon fa-eye-slash",
 		label: "Hide Non-Normative Text",
-	}
+	};
 
 	const legend_blocks = document.querySelectorAll("blockquote");
 	let legend_on = false;
@@ -45,13 +100,10 @@
 		})
 	});
 
-	document.querySelector("h1").insertAdjacentHTML(
-		"beforebegin",
-		`<div id='wm-wiki-toolbar' role='toolbar'><ul class='wm-toolbar' role='toolbar'><li>
-			<a id='lisar-legend-toggle' href='#' role='button'>
-				<i class='${nn_display_on.icon}' aria-hidden='true'></i> <span>${nn_display_on.label}</span>
-			</a>
-		</li></ul></div>`
+	toolbarAppend(`
+		<a id='lisar-legend-toggle' href='#' role='button'>
+			<i class='${nn_display_on.icon}' aria-hidden='true'></i> <span>${nn_display_on.label}</span>
+		</a>`
 	);
 
 	const toggle_button = document.querySelector("#lisar-legend-toggle");
