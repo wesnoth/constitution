@@ -9,9 +9,11 @@ WESMERE_PATH			:= $(realpath ..)/wesmere
 
 TARGETS = Project-Constitution.html
 
+DEPS = util.css util.js $(WESMERE_BUILD)
+
 all: $(TARGETS)
 
-%.html: %.md
+%.html: %.md $(DEPS)
 	@echo "  LISAR       $@"
 	@$(WESMERE_BUILD) $(WESMERE_PATH) $< > $@.new && mv -f $@.new $@
 
