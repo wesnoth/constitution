@@ -1,7 +1,7 @@
 #
 # Builds the static page containing the Wesnoth Constitution
 #
-# Copyright (C) 2020 by Iris Morelle <shadowm@wesnoth.org>
+# Copyright (C) 2020 - 2021 by Iris Morelle <shadowm@wesnoth.org>
 #
 
 WESMERE_BUILD			:= ./wesmere-build
