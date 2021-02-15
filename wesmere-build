@@ -122,6 +122,7 @@ def wesmere_xslt(input_xsl, xsltproc_bin, htmlpost_bin):
         # First write the unmodified XSLT output.
         with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8') as tmp_xsl:
             tmp_xsl.write(input_xsl)
+            tmp_xsl.flush()
             result = subprocess.run([xsltproc_bin, tmp_xsl.name],
                                     stdout=subprocess.PIPE,
                                     stderr=sys.stderr)
