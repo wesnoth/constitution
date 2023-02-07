@@ -15,9 +15,9 @@
 > **Rationale:** The Battle for Wesnoth Project exists and this is its purpose.
 
 
-**Article 2.** Wesnoth, Inc. is a registered non-profit organization which exists to support the Battle for Wesnoth Project's operations by handling finances as well as holding funds, intellectual properties, and other assets for the Project. It is also able to make executive decisions in cases where any such are needed to guarantee the fulfillment of the Project's stated mission, as well as the Project's integrity. Its structure and that of its Board of Directors shall be defined by a dedicated charter.
+**Article 2.** The Project's funds, intellectual property, and other assets will by held by Software in the Public Interest, Inc. (SPI). Interaction with SPI on the project's behalf will be done by the Board of Directors.
 
-> **Rationale:** Wesnoth, Inc. exists in order to represent the Project in the real world. Its existence is an absolute legal necessity and it cannot be disbanded. Likewise, the Project cannot be absorbed into Wesnoth, Inc. without making contributors perceive themselves as employees of the company, with all the legal consequences this carries.
+> **Rationale:** The costs of having taxes done by the current (as of this writing) legal entity holding the Project's funds and other assets (Wesnoth, Inc) is the single largest cost for the Project by a large margin, and will be significantly reduced by joining SPI. Additionally, SPI is a 501(c)(3) organization, which provides guarantees to those donating that their money will be used for a proper purpose.
 
 
 **Article 3.** The Battle for Wesnoth Project's product and all associated code it publishes is compliant with the Open Source Definition as published by the Open Source Initiative.
@@ -147,6 +147,29 @@ c) Two or more members of the Project Council or active developers who previousl
 **Article 20.** Once a change to the Constitution is approved by the Development Team, it shall come into effect immediately only if it does not affect the structure of the Project Council as per Articles 7, 8, 9, or 10; or the process for Project elections as per Articles 11 and 12. Otherwise, the change shall come into effect upon the end of the current development cycle and before Project Manager elections take place.
 
 > **Rationale:** This is the "no pulling the rug from under people's feet mid-development cycle" clause.
+
+
+## V. On the Board of Directors' structure
+
+
+**Article 21.** The Board of Directors will consist of three members.
+
+> **Rationale:** An odd number of people makes it much more likely that a majority can make a decision when needed rather than becoming deadlocked indefinitely.
+
+
+**Article 22.** There will be elections for the entire Board of Directors every other development cycle. This election will take place immediately after the election for Project Manager for development cycles where both elections take place. If a member of the Board resigns, then an election for the open position on the Board will be held within two weeks of their resignation. The people who are able to vote in the Board elections are the same as the people who are able to vote in the Project Manager elections. Anyone can be nominated to be a member of the Board by someone who is eligible to vote in the Board elections.
+
+> **Rationale:** There needs to be a structured way to change who is on the Board of Directors. Development experience is also not necessary to handle the responsibilities of being a member of the Board.
+
+
+**Article 23.** Interacting with SPI on behalf of the Project will be done by the Board of Directors, which will designate one member of the Board to be the primary liason to SPI. The remaining members of the Board will be secondary liasons to SPI in case the primary liason is unable to fulfill their role. If that occurs, the Board will decide which of the secondary liasons will become the new primary liason. Whoever becomes the new primary liason will remain so until the Board decides otherwise.
+
+> **Rationale:** SPI requires we provide someone they can contact if needed, and the Project requires someone whose reponsibility it is to initiate contact if needed for any reason.
+
+
+**Article 24.** The Board of Directors is is also able to make executive decisions in cases where any such are needed to guarantee the fulfillment of the Project's stated mission, as well as the Project's integrity.
+
+> **Rationale:** For example, if the Project Manager begins acting against the interests of the Project.
 
 
 ## Transitory Provisions
