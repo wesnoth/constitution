@@ -167,11 +167,6 @@ c) Two or more members of the Project Council or active developers who previousl
 > **Rationale:** SPI requires we provide someone they can contact if needed, and the Project requires someone whose reponsibility it is to initiate contact if needed for any reason.
 
 
-**Article 24.** The Board of Directors is is also able to make executive decisions in cases where any such are needed to guarantee the fulfillment of the Project's stated mission, as well as the Project's integrity.
-
-> **Rationale:** For example, if the Project Manager begins acting against the interests of the Project.
-
-
 ## Transitory Provisions
 
 
