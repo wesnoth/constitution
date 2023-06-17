@@ -1,6 +1,6 @@
 # Project Constitution
 
-*Version 1.0.20200605.0*
+*Version 1.0.20270207.0*
 
 *This version of the Battle for Wesnoth Project Constitution was written by Iris Morelle (shadowm) and reviewed by Charles Dang (Vultraz), Soliton, and Pentarctagon.*
 
